@@ -1,4 +1,3 @@
-// app/blog/[slug]/page.tsx
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 import BlogPostPageClient from './BlogPostPageClient'
@@ -24,13 +23,22 @@ async function getPost(slug: string) {
       }
     }
   `
-  
   return client.fetch(query, { slug })
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug)
-  
-  return <BlogPostPageClient post={post} />
+interface BlogPostPageProps {
+  params: {
+    slug: string
+  }
 }
 
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = params
+  const post = await getPost(slug)
+
+  if (!post) {
+    return <p>Post not found</p> // Handle the case when the post isn't found
+  }
+
+  return <BlogPostPageClient post={post} />
+}
