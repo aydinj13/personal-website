@@ -1,12 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// app/blog/[slug]/page.tsx
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 import BlogPostPageClient from './BlogPostPageClient'
 
-async function getPost(slug: string) {
+// Define the Post type for better type safety
+interface Post {
+  _id: string
+  title: string
+  subtitle?: string
+  mainImage: any
+  bodyContent: any
+  createdAt: string
+  category: string
+  estimatedReadingTime: number
+  author: any
+  relatedPosts: Array<{
+    _id: string
+    title: string
+    slug: { current: string }
+    mainImage: any
+    createdAt: string
+  }>
+}
+
+async function getPost(slug: string): Promise<Post | null> {
   const query = groq`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
-      slug,
       title,
       subtitle,
       mainImage,
@@ -24,22 +45,40 @@ async function getPost(slug: string) {
       }
     }
   `
-  return client.fetch(query, { slug })
-}
-
-interface BlogPostPageProps {
-  params: {
-    slug: string
+  
+  try {
+    return await client.fetch(query, { slug })
+  } catch (error) {
+    console.error('Error fetching post:', error)
+    return null
   }
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = params
-  const post = await getPost(slug)
+// Define correct props type for Next.js page component
+interface PageProps {
+  params: { slug: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
 
-  if (!post) {
-    return <p>Post not found</p> // Handle the case when the post isn't found
+export default async function BlogPostPage({ params }: PageProps) {
+  try {
+    const post = await getPost(params.slug)
+
+    if (!post) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <h1 className="text-2xl font-bold">Post not found</h1>
+        </div>
+      )
+    }
+
+    return <BlogPostPageClient post={post} />
+  } catch (error) {
+    console.error('Error rendering blog post:', error)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <h1 className="text-2xl font-bold">Error loading post</h1>
+      </div>
+    )
   }
-
-  return <BlogPostPageClient post={post} />
 }
