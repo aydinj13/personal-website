@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { 
@@ -9,8 +10,6 @@ import {
   CardTitle 
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
   Globe,
@@ -25,8 +24,13 @@ import {
 } from "lucide-react"
 import urlForImage from '@/sanity/lib/urlForImage'
 import Link from "next/link"
+import { ReactPortal } from "react"
+import { ReactNode } from "react"
+import { JSXElementConstructor, ReactElement } from "react"
+import { Key } from "react"
 
-const iconMap = {
+
+const iconMap: { [key: string]: any } = {
   globe: Globe,
   database: Database,
   smartphone: Smartphone,
@@ -36,30 +40,8 @@ const iconMap = {
   graduationCap: GraduationCap,
 }
 
-const ContactForm = ({ service }) => {
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    // Add email sending logic here
-  }
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Input placeholder="Your Name" required />
-      <Input type="email" placeholder="Your Email" required />
-      <Input placeholder="Company (optional)" />
-      <Textarea 
-        placeholder="Project Details" 
-        className="h-32" 
-        required 
-      />
-      <Button type="submit" className="w-full">
-        Get Quote
-      </Button>
-    </form>
-  )
-}
-
-export default function ServicesPageClient({ services, featuredProjects, testimonials }) {
+export default function ServicesPageClient({ services, featuredProjects, testimonials }: { services: any, featuredProjects: any, testimonials: any }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -75,9 +57,8 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
       {/* Services Grid */}
       <section className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service) => {
-            const IconComponent = iconMap[service.icon]
-            
+        {services.map((service: any) => {
+              const IconComponent = iconMap[service.icon as keyof typeof iconMap]
             return (
               <Card 
                 key={service._id}
@@ -126,13 +107,12 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {service.portfolio?.map((item, index) => (
+        {service.portfolio?.map((item: any, index: number) => (
           <Card key={index} className="overflow-hidden">
             {item.image && (
               <div className="relative aspect-video">
                 <img 
                   src={urlForImage(item.image).url()}
-                  alt={item.title}
                   className="object-cover w-full h-full transition-transform hover:scale-105"
                 />
               </div>
@@ -185,7 +165,7 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
   <div className="container mx-auto px-4">
     <h2 className="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {featuredProjects.map((project, index) => (
+      {featuredProjects.map((project: any, index: number) => (
         <Card 
           key={index}
           className="group overflow-hidden hover:shadow-lg transition-all duration-300"
@@ -196,7 +176,6 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
               {project.image ? (
                 <img 
                   src={urlForImage(project.image).url()}
-                  alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
@@ -225,7 +204,7 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
 
               {/* Tech Stack */}
               <div className="flex flex-wrap gap-2">
-                {project.technologies?.map((tech, i) => (
+                {project.technologies?.map((tech: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | Iterable<ReactNode> | null | undefined, i: Key | null | undefined) => (
                   <span 
                     key={i}
                     className="bg-gray-100 px-3 py-1 rounded-full text-sm"
@@ -266,7 +245,7 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-3xl font-bold mb-12 text-center">Client Testimonials</h2>
         <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+        {testimonials.map((testimonial: any, index: number) => (
             <Card key={index}>
               <CardContent className="pt-6 space-y-4">
                 <div className="flex gap-1">
@@ -279,7 +258,6 @@ export default function ServicesPageClient({ services, featuredProjects, testimo
                   {testimonial.image && (
                     <img
                       src={urlForImage(testimonial.image).url()}
-                      alt={testimonial.name}
                       className="w-12 h-12 rounded-full"
                     />
                   )}

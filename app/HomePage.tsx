@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Button } from "@/components/ui/button"
@@ -20,7 +22,7 @@ interface HomePageProps {
 }
 
 const HomePage = ({ data }: HomePageProps) => {
-  const { testimonials, videos, posts, featured } = data
+  const { testimonials, videos, posts } = data
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
@@ -37,7 +39,7 @@ const HomePage = ({ data }: HomePageProps) => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: "Something went wrong",
         variant: "destructive",
       })
     } finally {

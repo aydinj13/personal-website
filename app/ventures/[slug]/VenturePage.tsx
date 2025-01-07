@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import Link from "next/link"
@@ -5,8 +6,9 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import urlForImage from '@/sanity/lib/urlForImage'
 import { PortableText } from '@portabletext/react'
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react"
 
-export default function VenturePage({ venture }) {
+export default function VenturePage({ venture }: { venture: any }) {
   if (!venture) return null
 
   return (
@@ -103,7 +105,7 @@ export default function VenturePage({ venture }) {
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-4">Tech Stack</h2>
               <div className="flex flex-wrap gap-2">
-                {venture.techStack.map((tech, index) => (
+                {venture.techStack.map((tech: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | Iterable<ReactNode> | null | undefined, index: Key | null | undefined) => (
                   <span 
                     key={index}
                     className="px-4 py-2 bg-white rounded-lg shadow-sm"
@@ -124,7 +126,7 @@ export default function VenturePage({ venture }) {
           {venture.categories && venture.categories.length > 0 && (
             <div className="mt-12 pt-8 border-t">
               <div className="flex flex-wrap gap-2">
-                {venture.categories.map((category, index) => (
+                {venture.categories.map((category: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | Iterable<ReactNode> | null | undefined, index: Key | null | undefined) => (
                   <span 
                     key={index}
                     className="px-3 py-1 bg-gray-100 rounded-full text-sm"

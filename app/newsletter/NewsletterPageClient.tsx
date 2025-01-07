@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/newsletter/NewsletterPageClient.tsx
 "use client"
 
@@ -8,14 +9,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Mail, ArrowRight, Calendar } from "lucide-react"
 import urlForImage from '@/sanity/lib/urlForImage'
 import Link from 'next/link'
+import { Image } from 'sanity'
 //import { useToast } from "@/components/ui/use-toast"
 
-export default function NewsletterPageClient({ newsletters }) {
+export default function NewsletterPageClient({ newsletters }: { newsletters: any }) {
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   //const { toast } = useToast()
 
-  const handleSubscribe = async (e) => {
+  const handleSubscribe = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
     setIsSubmitting(true)
     try {
@@ -66,7 +68,7 @@ export default function NewsletterPageClient({ newsletters }) {
               </div>
               <p className="text-sm text-gray-500">
                 By subscribing, you agree to our privacy policy and terms of service. 
-                We'll send you weekly newsletters and important updates.
+                We&apos;ll send you weekly newsletters and important updates.
               </p>
             </form>
           </div>
@@ -77,7 +79,7 @@ export default function NewsletterPageClient({ newsletters }) {
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold mb-8">Previous Issues</h2>
         <div className="space-y-6">
-          {newsletters.map((issue) => (
+          {newsletters.map((issue: { _id: React.Key | null | undefined; slug: { current: any }; coverImage: Image | undefined; title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; publishedAt: string | number | Date; description: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | Iterable<React.ReactNode> | null | undefined }) => (
             <Link 
               key={issue._id} 
               href={`/newsletter/${issue.slug.current}`}
@@ -89,7 +91,6 @@ export default function NewsletterPageClient({ newsletters }) {
                     <div className="lg:w-1/3">
                       <img
                         src={urlForImage(issue.coverImage).url()}
-                        alt={issue.title}
                         className="h-48 lg:h-full w-full object-cover"
                       />
                     </div>

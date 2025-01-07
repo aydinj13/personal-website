@@ -5,7 +5,6 @@ import {
   Youtube, 
   Github, 
   Linkedin, 
-  Mail,
   Coffee
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

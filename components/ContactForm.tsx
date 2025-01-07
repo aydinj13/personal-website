@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -50,7 +50,7 @@ const budgetRanges = [
 
 const ContactForm = () => {
   const [formType, setFormType] = useState('client');
-  const [date, setDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date>()
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [selectedService, setSelectedService] = useState("");
@@ -111,7 +111,7 @@ const ContactForm = () => {
         setSelectedService("");
         setSelectedPartnershipType("");
         setSelectedBudget("");
-        setDate(null);
+        setDate(new Date);
         setTimeout(() => setSubmitted(false), 5000);
       }
     } catch (error) {

@@ -4,7 +4,6 @@ import Navbar from "@/components/Navbar";
 import { Karla } from 'next/font/google'
 import Footer from "@/components/Footer";
 import ThemeContextProvider from "@/context/theme-context";
-import ThemeSwitch from "@/components/theme-switch";
 import { Toaster } from "@/components/ui/toaster";
  
 
