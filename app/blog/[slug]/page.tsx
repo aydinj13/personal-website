@@ -6,6 +6,7 @@ async function getPost(slug: string) {
   const query = groq`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
+      slug,
       title,
       subtitle,
       mainImage,
@@ -26,15 +27,18 @@ async function getPost(slug: string) {
   return client.fetch(query, { slug })
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string }
-}) {
-  const post = await getPost(params.slug)
+interface BlogPostPageProps {
+  params: {
+    slug: string
+  }
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = params
+  const post = await getPost(slug)
 
   if (!post) {
-    return <div>Post not found</div>
+    return <p>Post not found</p> // Handle the case when the post isn't found
   }
 
   return <BlogPostPageClient post={post} />
