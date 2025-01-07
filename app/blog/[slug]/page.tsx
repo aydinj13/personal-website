@@ -1,29 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 import BlogPostPageClient from './BlogPostPageClient'
 
-// Define interfaces for the post data structure
-interface Post {
-  _id: string
-  title: string
-  subtitle?: string
-  mainImage: any
-  bodyContent: any
-  createdAt: string
-  category: string
-  estimatedReadingTime: number
-  author: any
-  relatedPosts: Array<{
-    _id: string
-    title: string
-    slug: { current: string }
-    mainImage: any
-    createdAt: string
-  }>
-}
-
-async function getPost(slug: string): Promise<Post | null> {
+async function getPost(slug: string) {
   const query = groq`
     *[_type == "post" && slug.current == $slug][0] {
       _id,
@@ -47,18 +26,15 @@ async function getPost(slug: string): Promise<Post | null> {
   return client.fetch(query, { slug })
 }
 
-// Update the props interface to match Next.js 13+ page props structure
-interface BlogPostPageProps {
+export default async function BlogPostPage({
+  params,
+}: {
   params: { slug: string }
-  searchParams?: { [key: string]: string | string[] | undefined }
-}
-
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = params
-  const post = await getPost(slug)
+}) {
+  const post = await getPost(params.slug)
 
   if (!post) {
-    return <p>Post not found</p>
+    return <div>Post not found</div>
   }
 
   return <BlogPostPageClient post={post} />
