@@ -3,6 +3,8 @@ import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import BlogPostPageClient from "./BlogPostPageClient";
 
+type Params = Promise<{ slug: string[] }>;
+
 async function getPost(slug: string) {
   const query = groq`
     *[_type == "post" && slug.current == $slug][0] {
@@ -28,14 +30,9 @@ async function getPost(slug: string) {
   return client.fetch(query, { slug });
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: {
-    slug: string;
-  };
-}) {
-  const post = await getPost(params.slug);
+export default async function BlogPostPage({ params }: { params: Params }) {
+  const { slug } = await params;
+  const post = await getPost(slug[0]);
 
   return <BlogPostPageClient post={post} />;
 }
