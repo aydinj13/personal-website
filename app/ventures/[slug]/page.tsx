@@ -3,6 +3,8 @@ import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 import VenturePage from './VenturePage'
 
+type Params = Promise<{ slug: string[] }>;
+
 async function getVenture(slug: string) {
   const query = groq`
     *[_type == "venture" && slug.current == $slug][0] {
@@ -22,7 +24,8 @@ async function getVenture(slug: string) {
   return client.fetch(query, { slug })
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const venture = await getVenture(params.slug)
+export default async function Page({ params }: { params: Params }) {
+  const { slug } = await params;
+  const venture = await getVenture(slug[0]);
   return <VenturePage venture={venture} />
 }
