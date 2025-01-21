@@ -5,27 +5,30 @@ import { groq } from 'next-sanity'
 import HomePage from './HomePage'
 import { format } from 'date-fns'
 
-async function getHomeData() {
-  const query = groq`{
-    "featured": *[_type == "featured"][0] {
+const homeQuery = groq`{
+  "featured": *[_type == "featured"][0] {
     title,
     description,
     url,
     image,
   },
-    "testimonials": *[_type == "testimonial"] | order(_createdAt desc),
-    "videos": *[_type == "video"] | order(_createdAt desc)[0...3],
-    "posts": *[_type == "post"] | order(createdAt desc)[0...3] {
-      _id,
-      title,
-      createdAt,
-      slug
+  "testimonials": *[_type == "testimonial"] | order(_createdAt desc),
+  "videos": *[_type == "video"] | order(_createdAt desc)[0...3],
+  "posts": *[_type == "post"] | order(createdAt desc)[0...3] {
+    _id,
+    title,
+    createdAt,
+    slug
+  }
+}`
+
+async function getHomeData() {
+  const data = await client.fetch(homeQuery, {}, {
+    next: {
+      revalidate: 60, // Revalidate every minute
     }
-  }`
-  
-  const data = await client.fetch(query)
-  
-  // Format the posts data
+  })
+
   return {
     ...data,
     posts: data.posts.map((post: any) => ({
@@ -39,3 +42,6 @@ export default async function Page() {
   const data = await getHomeData()
   return <HomePage data={data} />
 }
+
+// Add revalidation
+export const revalidate = 60

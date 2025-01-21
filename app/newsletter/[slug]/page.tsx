@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/newsletter/[slug]/page.tsx
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
@@ -7,34 +8,57 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, Calendar, Share2 } from 'lucide-react'
 import Image from 'next/image'
+import { notFound } from 'next/navigation'
 
-type Params = Promise<{ slug: string[] }>;
+const newsletterQuery = groq`
+  *[_type == "newsletter" && slug.current == $slug][0] {
+    _id,
+    title,
+    publishedAt,
+    coverImage,
+    content,
+    description,
+    "next": *[_type == "newsletter" && publishedAt > ^.publishedAt] | order(publishedAt asc) [0] {
+      title,
+      slug
+    },
+    "previous": *[_type == "newsletter" && publishedAt < ^.publishedAt] | order(publishedAt desc) [0] {
+      title,
+      slug
+    }
+  }
+`
 
 async function getNewsletterIssue(slug: string) {
-  const query = groq`
-    *[_type == "newsletter" && slug.current == $slug][0] {
-      _id,
-      title,
-      publishedAt,
-      coverImage,
-      content,
-      description,
-      "next": *[_type == "newsletter" && publishedAt > ^.publishedAt] | order(publishedAt asc) [0] {
-        title,
-        slug
-      },
-      "previous": *[_type == "newsletter" && publishedAt < ^.publishedAt] | order(publishedAt desc) [0] {
-        title,
-        slug
+  try {
+    const issue = await client.fetch(newsletterQuery, { slug }, {
+      next: {
+        revalidate: 60,
+        tags: [`newsletter-${slug}`]
       }
+    })
+
+    if (!issue) {
+      return null
     }
-  `
-  return client.fetch(query, { slug })
+
+    return issue
+  } catch (error) {
+    console.error('Error fetching newsletter:', error)
+    return null
+  }
 }
 
-export default async function NewsletterIssuePage({ params }: { params: Params }) {
-  const { slug } = await params;
-  const issue = await getNewsletterIssue(slug[0])
+export default async function NewsletterIssuePage({ 
+  params 
+}: { 
+  params: { slug: string } 
+}) {
+  const issue = await getNewsletterIssue(params.slug)
+
+  if (!issue) {
+    notFound()
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -45,6 +69,9 @@ export default async function NewsletterIssuePage({ params }: { params: Params }
             src={urlForImage(issue.coverImage).url()}
             alt={issue.title}
             className="w-full h-full object-cover opacity-50"
+            width={1920}
+            height={1080}
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
         </div>
@@ -90,9 +117,7 @@ export default async function NewsletterIssuePage({ params }: { params: Params }
             </header>
 
             <div className="prose prose-lg max-w-none">
-              <PortableText 
-                value={issue.content}
-              />
+              <PortableText value={issue.content} />
             </div>
           </div>
 
@@ -119,4 +144,17 @@ export default async function NewsletterIssuePage({ params }: { params: Params }
       </div>
     </div>
   )
+}
+
+// Add revalidation
+export const revalidate = 60
+
+// Generate static params for better performance
+export async function generateStaticParams() {
+  const query = groq`*[_type == "newsletter"] { slug }`;
+  const slugs = await client.fetch(query);
+  
+  return slugs.map((slug: any) => ({
+    slug: slug.current,
+  }));
 }
