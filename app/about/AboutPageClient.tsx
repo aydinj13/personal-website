@@ -1,5 +1,4 @@
-// app/about/AboutPageClient.tsx
-"use client";
+'use client';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +6,62 @@ import { Badge } from "@/components/ui/badge";
 import { Github, Linkedin, Twitter, Download, Mail } from "lucide-react";
 import urlForImage from "@/sanity/lib/urlForImage";
 import { format } from "date-fns";
+import Image from "next/image";
+import type { Image as SanityImage } from 'sanity';
+
+interface SocialLinks {
+  github?: string;
+  linkedin?: string;
+  twitter?: string;
+  email?: string;
+}
+
+interface Profile {
+  name: string;
+  title: string;
+  bio: string;
+  image: SanityImage | null;
+  resumeURL: string;
+  socialLinks: SocialLinks;
+}
+
+interface Experience {
+  role: string;
+  company: string;
+  description: string;
+  startDate: string;
+  endDate?: string;
+  isCurrentRole?: boolean;
+}
+
+interface Grade {
+  subject: string;
+  grade: string;
+}
+
+interface Education {
+  degree: string;
+  school: string;
+  year: string;
+  grades?: Grade[];
+}
+
+interface Achievement {
+  title: string;
+  description: string;
+  date?: string;
+}
+
+interface AboutPageData {
+  profile: Profile;
+  experience: Experience[];
+  education: Education[];
+  achievements: Achievement[];
+}
+
+interface AboutPageClientProps {
+  data?: Partial<AboutPageData>;
+}
 
 function formatDateRange(
   startDate: string,
@@ -23,8 +78,8 @@ function formatDateRange(
   return `${start} - ${end}`;
 }
 
-export default function AboutPageClient({ data = {} }) {
-  // Provide default values for all data
+export default function AboutPageClient({ data = {} }: AboutPageClientProps) {
+  // Provide default values for all data with proper typing
   const {
     profile = {
       name: "",
@@ -50,6 +105,8 @@ export default function AboutPageClient({ data = {} }) {
                 src={urlForImage(profile.image).url()}
                 alt={profile.name || "Profile"}
                 className="rounded-lg object-cover w-full h-full"
+                width={800}
+                height={600}
               />
             ) : (
               <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">

@@ -13,6 +13,7 @@ import {
   ReactPortal,
   Key,
 } from "react";
+import Image from "next/image";
 
 export default function VenturePage({ venture }: { venture: any }) {
   if (!venture) return null;

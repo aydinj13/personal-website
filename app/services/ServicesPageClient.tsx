@@ -35,6 +35,7 @@ import { ReactPortal } from "react";
 import { ReactNode } from "react";
 import { JSXElementConstructor, ReactElement } from "react";
 import { Key } from "react";
+import Image from "next/image";
 
 const iconMap: { [key: string]: any } = {
   globe: Globe,
@@ -134,6 +135,7 @@ export default function ServicesPageClient({
                                   <div className="relative aspect-video">
                                     <Image
                                       src={urlForImage(item.image).url()}
+                                      alt=""
                                       className="object-cover w-full h-full transition-transform hover:scale-105"
                                     />
                                   </div>
@@ -208,6 +210,7 @@ export default function ServicesPageClient({
                     {project.image ? (
                       <Image
                         src={urlForImage(project.image).url()}
+                        alt=""
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
@@ -323,6 +326,7 @@ export default function ServicesPageClient({
                   {testimonial.image && (
                     <Image
                       src={urlForImage(testimonial.image).url()}
+                      alt=""
                       className="w-12 h-12 rounded-full"
                     />
                   )}
