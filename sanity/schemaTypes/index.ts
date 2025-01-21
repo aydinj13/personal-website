@@ -5,7 +5,6 @@ import {newsletter} from './newsletter'
 import {video} from './video'
 import {venture} from './venture'
 import {service} from './service'
-//import {project} from './project'
 import {author} from './author'
 import { profile } from "./profile";
 import { achievement } from "./achievement";
@@ -13,6 +12,9 @@ import { experience } from "./experience";
 import { education } from "./education";
 import { portfolio } from "./portfolio";
 import { featured } from "./featured";
+import twitterX from "./twitterX";
+import instagram from "./instagram";
+import youtube from "./youtube";
 
 export const schemaTypes = [
     blockContentType,   
@@ -22,7 +24,6 @@ export const schemaTypes = [
     video,
     venture,
     service,
-    //project,
     profile,
     experience,
     education,
@@ -30,4 +31,7 @@ export const schemaTypes = [
     author,
     portfolio,
     featured,
+    twitterX,
+    instagram,
+    youtube,
   ];

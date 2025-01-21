@@ -6,44 +6,9 @@ import urlForImage from '@/sanity/lib/urlForImage'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, Calendar, Share2 } from 'lucide-react'
+import Image from 'next/image'
 
-const PortableTextComponents = {
-  block: {
-    h1: ({children}) => <h1 className="text-4xl font-bold mt-12 mb-6">{children}</h1>,
-    h2: ({children}) => <h2 className="text-3xl font-bold mt-10 mb-4">{children}</h2>,
-    h3: ({children}) => <h3 className="text-2xl font-bold mt-8 mb-3">{children}</h3>,
-    normal: ({children}) => <p className="mb-6 leading-relaxed text-gray-700">{children}</p>,
-    blockquote: ({children}) => (
-      <blockquote className="border-l-4 border-blue-500 pl-4 my-6 italic">
-        {children}
-      </blockquote>
-    ),
-  },
-  list: {
-    bullet: ({children}) => <ul className="mb-6 ml-6 list-disc space-y-2">{children}</ul>,
-    number: ({children}) => <ol className="mb-6 ml-6 list-decimal space-y-2">{children}</ol>,
-  },
-  marks: {
-    link: ({value, children}) => {
-      const target = (value?.href || '').startsWith('http') ? '_blank' : undefined
-      return (
-        <a 
-          href={value?.href}
-          target={target}
-          rel={target === '_blank' ? 'noopener noreferrer' : undefined}
-          className="text-blue-600 hover:underline"
-        >
-          {children}
-        </a>
-      )
-    },
-    code: ({children}) => (
-      <code className="bg-gray-100 rounded px-2 py-1 font-mono text-sm">
-        {children}
-      </code>
-    ),
-  },
-}
+type Params = Promise<{ slug: string[] }>;
 
 async function getNewsletterIssue(slug: string) {
   const query = groq`
@@ -67,15 +32,16 @@ async function getNewsletterIssue(slug: string) {
   return client.fetch(query, { slug })
 }
 
-export default async function NewsletterIssuePage({ params }: { params: { slug: string } }) {
-  const issue = await getNewsletterIssue(params.slug)
+export default async function NewsletterIssuePage({ params }: { params: Params }) {
+  const { slug } = await params;
+  const issue = await getNewsletterIssue(slug[0])
 
   return (
     <div className="min-h-screen bg-white">
       {/* Header with image */}
       {issue.coverImage && (
         <div className="relative h-[40vh] min-h-[400px] bg-gray-900">
-          <img
+          <Image
             src={urlForImage(issue.coverImage).url()}
             alt={issue.title}
             className="w-full h-full object-cover opacity-50"
@@ -125,8 +91,7 @@ export default async function NewsletterIssuePage({ params }: { params: { slug: 
 
             <div className="prose prose-lg max-w-none">
               <PortableText 
-                value={issue.content} 
-                components={PortableTextComponents}
+                value={issue.content}
               />
             </div>
           </div>

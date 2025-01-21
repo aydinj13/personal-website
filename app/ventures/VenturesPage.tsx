@@ -1,32 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import urlForImage from '@/sanity/lib/urlForImage'
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import urlForImage from "@/sanity/lib/urlForImage";
 
 interface Venture {
-  _id: string
-  name: string
-  subtitle?: string
-  bodyContent?: string
-  mainImage?: any
-  link?: string
-  slug: string
-  featured?: boolean
-  status?: string
-  categories?: string[]
-  techStack?: string[]
+  _id: string;
+  name: string;
+  subtitle?: string;
+  bodyContent?: string;
+  mainImage?: any;
+  link?: string;
+  slug: string;
+  featured?: boolean;
+  status?: string;
+  categories?: string[];
+  techStack?: string[];
   metrics?: {
-    users?: number
-    revenue?: string
-    growth?: string
-  }
-  _createdAt: string
+    users?: number;
+    revenue?: string;
+    growth?: string;
+  };
+  _createdAt: string;
 }
 
 interface VenturesPageProps {
-  ventures: Venture[]
+  ventures: Venture[];
 }
 
 export default function VenturesPage({ ventures }: VenturesPageProps) {
@@ -37,10 +37,13 @@ export default function VenturesPage({ ventures }: VenturesPageProps) {
         <div className="container mx-auto px-4 text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold">My Ventures</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore the SaaS, startups, and investments I&apos;m passionate about.
+            Explore the SaaS, startups, and investments I&apos;m passionate
+            about.
           </p>
           <Link href="/contact">
-            <Button size="lg" className="mt-6">Contact Me</Button>
+            <Button size="lg" className="mt-6">
+              Contact Me
+            </Button>
           </Link>
         </div>
       </section>
@@ -49,8 +52,8 @@ export default function VenturesPage({ ventures }: VenturesPageProps) {
       <section className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {ventures.map((venture) => (
-            <Link 
-              key={venture._id} 
+            <Link
+              key={venture._id}
               href={venture.link || `/ventures/${venture.slug}`}
               className="block group"
             >
@@ -58,7 +61,7 @@ export default function VenturesPage({ ventures }: VenturesPageProps) {
                 {/* Image Container */}
                 <div className="aspect-video relative overflow-hidden">
                   {venture.mainImage ? (
-                    <img
+                    <Image
                       src={urlForImage(venture.mainImage).url()}
                       alt={venture.name}
                       width={600}
@@ -73,10 +76,15 @@ export default function VenturesPage({ ventures }: VenturesPageProps) {
                   {/* Status Badge */}
                   {venture.status && (
                     <div className="absolute top-4 left-4">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium 
-                        ${venture.status === 'active' ? 'bg-green-100 text-green-800' : 
-                          venture.status === 'development' ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-blue-100 text-blue-800'}`}
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium 
+                        ${
+                          venture.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : venture.status === "development"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-blue-100 text-blue-800"
+                        }`}
                       >
                         {venture.status}
                       </span>
@@ -92,12 +100,12 @@ export default function VenturesPage({ ventures }: VenturesPageProps) {
                   {venture.subtitle && (
                     <p className="text-gray-600 mb-4">{venture.subtitle}</p>
                   )}
-                  
+
                   {/* Categories */}
                   {venture.categories && venture.categories.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-auto">
                       {venture.categories.map((category, index) => (
-                        <span 
+                        <span
                           key={index}
                           className="text-xs px-2 py-1 bg-gray-100 rounded-full"
                         >
@@ -128,5 +136,5 @@ export default function VenturesPage({ ventures }: VenturesPageProps) {
         </div>
       </section>
     </div>
-  )
+  );
 }

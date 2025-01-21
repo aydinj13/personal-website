@@ -1,15 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, ExternalLink } from "lucide-react"
-import urlForImage from '@/sanity/lib/urlForImage'
-import { PortableText } from '@portabletext/react'
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import urlForImage from "@/sanity/lib/urlForImage";
+import { PortableText } from "@portabletext/react";
+import {
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+  Key,
+} from "react";
 
 export default function VenturePage({ venture }: { venture: any }) {
-  if (!venture) return null
+  if (!venture) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -17,7 +23,7 @@ export default function VenturePage({ venture }: { venture: any }) {
       <div className="relative h-[60vh] min-h-[400px] w-full">
         {venture.mainImage ? (
           <>
-            <img
+            <Image
               src={urlForImage(venture.mainImage).url()}
               alt={venture.name}
               className="object-cover"
@@ -32,10 +38,15 @@ export default function VenturePage({ venture }: { venture: any }) {
         <div className="absolute inset-0 flex items-center justify-center text-white">
           <div className="container mx-auto px-4 space-y-4 text-center">
             {venture.status && (
-              <span className={`px-4 py-1 rounded-full text-sm font-medium 
-                ${venture.status === 'active' ? 'bg-green-500' : 
-                  venture.status === 'development' ? 'bg-yellow-500' : 
-                  'bg-blue-500'}`}
+              <span
+                className={`px-4 py-1 rounded-full text-sm font-medium 
+                ${
+                  venture.status === "active"
+                    ? "bg-green-500"
+                    : venture.status === "development"
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
+                }`}
               >
                 {venture.status}
               </span>
@@ -63,9 +74,9 @@ export default function VenturePage({ venture }: { venture: any }) {
             </Link>
             {venture.link && (
               <Button asChild>
-                <a 
-                  href={venture.link} 
-                  target="_blank" 
+                <a
+                  href={venture.link}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center"
                 >
@@ -81,19 +92,25 @@ export default function VenturePage({ venture }: { venture: any }) {
             <div className="grid grid-cols-3 gap-6 mb-12">
               {venture.metrics.users && (
                 <div className="bg-white p-6 rounded-lg shadow-sm text-center">
-                  <div className="text-3xl font-bold">{venture.metrics.users}+</div>
+                  <div className="text-3xl font-bold">
+                    {venture.metrics.users}+
+                  </div>
                   <div className="text-gray-600">Active Users</div>
                 </div>
               )}
               {venture.metrics.revenue && (
                 <div className="bg-white p-6 rounded-lg shadow-sm text-center">
-                  <div className="text-3xl font-bold">{venture.metrics.revenue}</div>
+                  <div className="text-3xl font-bold">
+                    {venture.metrics.revenue}
+                  </div>
                   <div className="text-gray-600">Revenue</div>
                 </div>
               )}
               {venture.metrics.growth && (
                 <div className="bg-white p-6 rounded-lg shadow-sm text-center">
-                  <div className="text-3xl font-bold">{venture.metrics.growth}</div>
+                  <div className="text-3xl font-bold">
+                    {venture.metrics.growth}
+                  </div>
                   <div className="text-gray-600">Growth Rate</div>
                 </div>
               )}
@@ -105,14 +122,46 @@ export default function VenturePage({ venture }: { venture: any }) {
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-4">Tech Stack</h2>
               <div className="flex flex-wrap gap-2">
-                {venture.techStack.map((tech: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | Iterable<ReactNode> | null | undefined, index: Key | null | undefined) => (
-                  <span 
-                    key={index}
-                    className="px-4 py-2 bg-white rounded-lg shadow-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
+                {venture.techStack.map(
+                  (
+                    tech:
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | ReactPortal
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | Iterable<ReactNode>
+                      | null
+                      | undefined,
+                    index: Key | null | undefined
+                  ) => (
+                    <span
+                      key={index}
+                      className="px-4 py-2 bg-white rounded-lg shadow-sm"
+                    >
+                      {tech}
+                    </span>
+                  )
+                )}
               </div>
             </div>
           )}
@@ -126,19 +175,51 @@ export default function VenturePage({ venture }: { venture: any }) {
           {venture.categories && venture.categories.length > 0 && (
             <div className="mt-12 pt-8 border-t">
               <div className="flex flex-wrap gap-2">
-                {venture.categories.map((category: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | Iterable<ReactNode> | null | undefined, index: Key | null | undefined) => (
-                  <span 
-                    key={index}
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm"
-                  >
-                    {category}
-                  </span>
-                ))}
+                {venture.categories.map(
+                  (
+                    category:
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | ReactPortal
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | Iterable<ReactNode>
+                      | null
+                      | undefined,
+                    index: Key | null | undefined
+                  ) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+                    >
+                      {category}
+                    </span>
+                  )
+                )}
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

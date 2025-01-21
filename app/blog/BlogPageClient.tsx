@@ -1,52 +1,57 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-"use client"
+import { useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Search, Calendar, Clock } from "lucide-react";
+import Link from "next/link";
+import urlForImage from "@/sanity/lib/urlForImage";
+import Image from "next/image"
 
-import { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Search, Calendar, Clock } from 'lucide-react'
-import Link from 'next/link'
-import urlForImage from '@/sanity/lib/urlForImage'
-
-export default function BlogPageClient({ posts }) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
+export default function BlogPageClient({ posts }: { posts: any[] }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Debug log
-  console.log('Client received posts:', posts)
+  console.log("Client received posts:", posts);
 
   // Get unique categories from posts
-  const categories = ["All"]
-  posts.forEach(post => {
+  const categories = ["All"];
+  posts.forEach((post) => {
     if (post.category && !categories.includes(post.category)) {
-      categories.push(post.category)
+      categories.push(post.category);
     }
-  })
+  });
 
-  const categoriesWithCount = categories.map(category => ({
+  const categoriesWithCount = categories.map((category) => ({
     name: category,
-    count: category === "All" 
-      ? posts.length 
-      : posts.filter(post => post.category === category).length
-  }))
+    count:
+      category === "All"
+        ? posts.length
+        : posts.filter((post) => post.category === category).length,
+  }));
 
   // Filter posts based on search query and selected category
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = 
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch =
       post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.subtitle?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      post.bodyContent?.some(block => 
-        block._type === 'block' && 
-        block.children?.some(child => 
-          child.text?.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      ) || false
+      post.subtitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.bodyContent?.some(
+        (block: any) =>
+          block._type === "block" &&
+          block.children?.some((child: any) =>
+            child.text?.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+      ) ||
+      false;
 
-    const matchesCategory = selectedCategory === "All" || post.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+    const matchesCategory =
+      selectedCategory === "All" || post.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -73,7 +78,9 @@ export default function BlogPageClient({ posts }) {
               {categoriesWithCount.map((category) => (
                 <Button
                   key={category.name}
-                  variant={selectedCategory === category.name ? "default" : "ghost"}
+                  variant={
+                    selectedCategory === category.name ? "default" : "ghost"
+                  }
                   className="w-full justify-between"
                   onClick={() => setSelectedCategory(category.name)}
                 >
@@ -93,11 +100,14 @@ export default function BlogPageClient({ posts }) {
           ) : (
             <div className="space-y-6">
               {filteredPosts.map((post) => (
-                <Card key={post._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card
+                  key={post._id}
+                  className="overflow-hidden hover:shadow-lg transition-shadow"
+                >
                   <div className="md:flex">
                     <div className="md:w-1/3">
                       {post.mainImage ? (
-                        <img
+                        <Image
                           src={urlForImage(post.mainImage).url()}
                           alt={post.title}
                           className="h-48 w-full object-cover"
@@ -115,23 +125,30 @@ export default function BlogPageClient({ posts }) {
                         )}
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {new Date(post.createdAt).toLocaleDateString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })}
+                          {new Date(post.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "long",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
                         </div>
                         <div className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
                           {post.estimatedReadingTime || 5} min read
                         </div>
                       </div>
-                      <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+                      <h2 className="text-xl font-semibold mb-2">
+                        {post.title}
+                      </h2>
                       {post.subtitle && (
                         <p className="text-gray-600 mb-4">{post.subtitle}</p>
                       )}
                       <Link href={`/blog/${post.slug.current}`}>
-                        <Button variant="link" className="p-0">Read More →</Button>
+                        <Button variant="link" className="p-0">
+                          Read More →
+                        </Button>
                       </Link>
                     </div>
                   </div>
@@ -142,5 +159,5 @@ export default function BlogPageClient({ posts }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
