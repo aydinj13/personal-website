@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/blog/[slug]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import BlogPostPageClient from "./BlogPostPageClient";
-import { notFound } from 'next/navigation';
 
-// Move query to constant
+type Params = Promise<{ slug: string[] }>;
+
 const postQuery = groq`
   *[_type == "post" && slug.current == $slug][0] {
     _id,
@@ -28,44 +27,19 @@ const postQuery = groq`
 `;
 
 async function getPost(slug: string) {
-  try {
-    const post = await client.fetch(postQuery, { slug }, {
-      next: {
-        revalidate: 60, // Revalidate every minute
-        tags: [`post-${slug}`] // Tag for individual post revalidation
-      }
-    });
-
-    if (!post) {
-      return null;
+  return client.fetch(postQuery, { slug }, {
+    next: {
+      revalidate: 60 // Revalidate every minute
     }
-
-    return post;
-  } catch (error) {
-    console.error('Error fetching post:', error);
-    return null;
-  }
+  });
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug);
-
-  if (!post) {
-    notFound();
-  }
+export default async function BlogPostPage({ params }: { params: Params }) {
+  const { slug } = await params;
+  const post = await getPost(slug[0]);
 
   return <BlogPostPageClient post={post} />;
 }
 
 // Add revalidation
 export const revalidate = 60;
-
-// Generate static params for faster builds
-export async function generateStaticParams() {
-  const query = groq`*[_type == "post"] { slug }`;
-  const slugs = await client.fetch(query);
-  
-  return slugs.map((slug: any) => ({
-    slug: slug.current,
-  }));
-}
